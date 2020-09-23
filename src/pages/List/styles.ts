@@ -4,7 +4,7 @@ import { FlatList } from 'react-native';
 interface IMovie {
   id: string;
   title: string;
-  image: string;
+  poster_path: string;
 }
 
 export const Container = styled.SafeAreaView`

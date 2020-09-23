@@ -2,23 +2,21 @@ import React, { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import {
-  Container,
-  CartPricing,
-  CartButton,
-  CartButtonText,
-  CartTotalPrice,
-} from './styles';
+import { Container, CartButton, CartButtonText } from './styles';
+
+import { useCart } from '../../hooks/cart';
 
 const FloatingCart: React.FC = () => {
   const navigation = useNavigation();
+  const { movies } = useCart();
 
   const totalItensInCart = useMemo(() => {
-    // const total = products.reduce(
-    //   (accumulator, product) => accumulator + product.quantity, 0
-    // );
-    // return total
-  }, []);
+    const total = movies.reduce(
+      (accumulator, movie) => accumulator + movie.quantity,
+      0,
+    );
+    return total;
+  }, [movies]);
 
   return (
     <Container>

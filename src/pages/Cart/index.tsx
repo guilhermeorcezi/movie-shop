@@ -11,45 +11,66 @@ import {
   MovieImage,
   MovieTitleContainer,
   MovieTitle,
-  MoviePriceContainer,
-  MovieSinglePrice,
-  TotalContainer,
-  MoviePrice,
   MovieQuantity,
   ActionContainer,
   ActionButton,
+  TotalContainer,
   TotalMoviesContainer,
   TotalMoviesText,
-  SubtotalValue,
 } from './styles';
+
+import { useCart } from '../../hooks/cart';
 
 interface IMovie {
   id: string;
   title: string;
-  image: string;
+  poster_path: string;
   quantity: number;
 }
 
 const Cart: React.FC = () => {
-  const handleIncrement = useCallback((id: string): void => { }, []);
+  const { increment, decrement, movies } = useCart();
 
-  const handleDecrement = useCallback((id: string): void => { }, []);
+  const handleIncrement = useCallback(
+    (id: string): void => {
+      increment(id);
+    },
+    [increment],
+  );
 
-  const totalItensInCart = useMemo(() => { }, []);
+  const handleDecrement = useCallback(
+    (id: string): void => {
+      decrement(id);
+    },
+    [decrement],
+  );
+
+  const totalItensInCart = useMemo(() => {
+    const total = movies.reduce(
+      (accumulator, movie) => accumulator + movie.quantity,
+      0,
+    );
+
+    return total;
+  }, [movies]);
 
   return (
     <Container>
       <MovieContainer>
         <MovieList
           data={movies}
-          keyExtractor={item => item.id}
+          keyExtractor={(item, index) => `list-item-${index}`}
           ListFooterComponent={<View />}
           ListFooterComponentStyle={{
             height: 80,
           }}
-          renderItem={({ item }: { item: Movie }) => (
+          renderItem={({ item }: { item: IMovie }) => (
             <Movie>
-              <MovieImage source={{ uri: item.image_url }} />
+              <MovieImage
+                source={{
+                  uri: `https://image.tmdb.org/t/p/w300_and_h450_bestv2/${item.poster_path}`,
+                }}
+              />
 
               <MovieTitleContainer>
                 <MovieTitle>{item.title}</MovieTitle>
@@ -57,7 +78,6 @@ const Cart: React.FC = () => {
                 <TotalContainer>
                   <MovieQuantity>{`${item.quantity}x`}</MovieQuantity>
                 </TotalContainer>
-                
               </MovieTitleContainer>
 
               <ActionContainer>
